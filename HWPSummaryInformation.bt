@@ -1,0 +1,38 @@
+local uint i;
+local uint32 property_count;
+local uint32 DataSize;
+
+struct HWPSummaryHeader {
+    FSeek(44);
+    uint32 FullSizeOffset <format=hex>;
+    uint32 FullSize <format=hex>;
+    uint32 PropertyCount <format=hex>;
+    property_count = PropertyCount;
+}hwpsummaryheader;
+
+struct PropertyList {
+    for(i = 0; i < property_count; i++) {
+        struct PropertyID {
+            uint32 PropertyID <format=hex>;
+            uint32 UnknownData <format=hex>;
+        }propertyid;
+    }
+}propertylist;
+
+struct PropertySet {
+    for(i = 0; i < property_count; i++) {
+        struct PropertyData {
+            uint32 CheckType <format=hex>;
+            if( CheckType == 31 ) { // 1f 00 00 00
+                uint32 data_size <format=hex>;
+                DataSize = data_size * 2;
+                BYTE Data[DataSize]; // MUST USING INSPECTOR (UNICODE DATA)
+                if (sizeof(Data) % 4 == 2){
+                    FSkip(2);
+                }
+            } else if (CheckType == 64) { // 40 00 00 00
+                FILETIME DateTime <comment="Date">;
+            }
+        }propertydata;
+    }
+}propertyset;
