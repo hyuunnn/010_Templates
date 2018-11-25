@@ -1,4 +1,4 @@
-## HWPSummaryInformation 010 Templates
+## HWPSummaryInformation 010 Template
 
 <img src="images/HWPSummaryInformation_1.png" width="100%">
 
